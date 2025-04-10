@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Векторный поиск</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .search-box {
+            margin: 30px 0;
+            display: flex;
+        }
+        #search-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #search-button {
+            padding: 10px 20px;
+            background: #4285f4;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .result-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .result-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .result-preview {
+            color: #444;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 2px;
+        }
+        .view-doc {
+            color: #4285f4;
+            text-decoration: none;
+        }
+        .no-results {
+            color: #888;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Векторная поисковая система</h1>
+
+    <form method="POST">
+        <div class="search-box">
+            <input id="search-input" name="query" type="text"
+                   value="{{ query }}" placeholder="Введите поисковый запрос...">
+            <button id="search-button" type="submit">Поиск</button>
+        </div>
+    </form>
+
+    {% if query %}
+        <h2>Результаты поиска для "{{ query }}"</h2>
+
+        {% if results %}
+            {% for res in results %}
+                <div class="result">
+                    <div class="result-title">{{ res.title }}</div>
+                    <div class="result-meta">
+                        Релевантность: {{ res.score }} |
+                        <a href="{{ url_for('show_document', doc_id=res.id, query=query) }}"
+                           class="view-doc">Просмотреть документ</a>
+                    </div>
+                    <div class="result-preview">{{ res.highlight|safe }}</div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-results">По вашему запросу ничего не найдено</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
